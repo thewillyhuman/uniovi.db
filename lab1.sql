@@ -1,15 +1,15 @@
 -- First query.
-select * from coches;
+SELECT * FROM coches;
 
 -- Second query.
-select * from coches where MODELO='gtd';
+SELECT * FROM coches where modelo='gtd';
 
 -- Third query.
-insert into coches (codcoche, nombrech, modelo) values ('66','GuillermoCar','4x4');
+INSERT into coches (codcoche, nombrech, modelo) VALUES ('66','GuillermoCar','4x4');
 
 -- Fourth query.
-delete from coches where codcoche='66';
+DELETE FROM coches WHERE codcoche='66';
 
--- 5th query.
-insert into coches (codcoche, nombrech, modelo) values ('66','GuillermoCar','4x4');
-update coches set nombrech='TheWillyCar' where codcoche='66';
+-- 5th query. (we add the new car in order not to change the natural state of the database)
+INSERT into coches (codcoche, nombrech, modelo) VALUES ('66','GuillermoCar','4x4');
+UPDATE coches SET nombrech='TheWillyCar' WHERE codcoche='66';
