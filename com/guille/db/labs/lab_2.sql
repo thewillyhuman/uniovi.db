@@ -34,4 +34,9 @@ SELECT * FROM clientes WHERE ciudad='madrid' AND apellido='garcia';
 --24 SELECT  nombre FROM clientes WHERE dni NOT IN (SELECT dni FROM clientes, ventas, concesionarios WHERE clientes.dni=ventas.dni AND ventas.cifc=concesionarios.cifc AND concesionarios.ciudadc='madrid' AND ventas.color='rojo');
 --25 SELECT cifc, SUM(cantidad) FROM concesionarios, distribucion WHERE concesionarios.cifc=distribucion.cifc GROUP BY concesionarios.cifc;
 --26 SELECT DISTINCT cifc, AVG(distribucion.cantidad) media FROM distribucion, concesionarios WHERE distribucion.cifc=concesionarios.cifc and cantidad > 10 GROUP BY cifc
-SELECT DISTINCT cifc, SUM(distribucion.cantidad) stock FROM distribucion, concesionarios WHERE distribucion.cifc=concesionarios.cifc GROUP BY cifc
+--27 SELECT DISTINCT cifc, SUM(distribucion.cantidad) stock FROM distribucion, concesionarios WHERE distribucion.cifc=concesionarios.cifc GROUP BY cifc HAVING SUM(distribucion.cantidad) >=10 AND SUM(distribucion.cantidad) <=18
+--28 SELECT COUNT(marcas.nombrem) FROM marcas WHERE marcas.ciudadm='madrid';
+--29 SELECT nombre, apellido FROM clientes, ventas, concesionarios WHERE clientes.dni=ventas.dni AND ventas.cifc=concesionarios.cifc AND concesionarios.ciudadc='madrid' AND clientes.nombre LIKE 'j%';
+--30 SELECT nombre, apellido FROM clientes ORDER BY clientes.nombre
+--31 SELECT DISTINCT nombre, apellido FROM clientes, ventas, concesionarios WHERE clientes.dni=ventas.dni AND ventas.cifc=concesionarios.cifc AND concesionarios.cifc IN (SELECT cifc FROM concesionarios, ventas WHERE concesionarios.cifc=ventas.cifc AND ventas.dni='1');
+--32 SELECT cifc cif, nombrec nombre, ciudadc ciudad, AVG(cantidad) cantidad FROM distribucion, concesionarios WHERE concesionarios.cifc=distribucion.cifc GROUP BY distribucion.cifc, concesionarios.nombrec, concesionarios.ciudadc HAVING AVG(cantidad) > (SELECT AVG(cantidad) FROM distribucion);
