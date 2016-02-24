@@ -68,4 +68,24 @@ SELECT titulo, precio FROM titulos WHERE titulos.precio=(SELECT MIN(precio) FROM
 SELECT au_nombre, au_ciudad FROM autores WHERE au_ciudad=(SELECT au_ciudad FROM autores WHERE au_nombre='Abraham' AND au_apellido='Silberschatz')
 
 -- 22 
-SELECT au_nombre, au_apellido FROM autores, titulosautores WHERE autores.au_id=titulosautores.au_id AND porcentaje_participacion<100
+SELECT au_nombre, au_apellido FROM autores, titulosautores WHERE autores.au_id=titulosautores.au_id AND porcentaje_participacion<1 AND au_id IN (SELECT au_id FROM autores, titulosautores WHERE autores.au_id=titulosautores.au_id AND porcentaje_participacion=1);
+
+-- 23
+-- A
+SELECT tipo FROM titulos, editoriales WHERE titulos.ed_id=editoriales.ed_id GROUP BY tipo HAVING count(ed_id)>1;
+-- B (Second option)
+SELECT DISTINCT tipo FROM titulos WHERE tipo IN (SELECT tipo FROM titulos, editoriales WHERE titulos.ed_id=editoriales.ed_id GROUP BY tipo HAVING count(ed_id)>1)
+
+-- 24
+CREATE VIEW AVERAGES_BY_TYPE AS SELECT tipo, AVG(precio) AVERAGE FROM titulos GROUP BY tipo;
+SELECT DISTINCT titulo, average FROM titulos, averages_by_type WHERE titulos.tipo=averages_by_type.tipo AND titulos.precio*2 = averages_by_type.average;
+
+-- 25
+SELECT titulo FROM titulos WHERE pre_publicacion > (SELECT MAX(pre_publicacion) FROM editoriales, titulos WHERE titulos.ed_id = editoriales.ed_id AND editoriales.ed_nombre='Prentice Hall');
+
+-- 26
+SELECT titulo FROM titulos, editoriales WHERE titulos.ed_id=editoriales.ed_id AND editoriales.ed_ciudad LIKE 'B%';
+
+-- 27
+-- A
+SELECT ed_nombre FROM editoriales WHERE ed_id NOT IN (SELECT DISTINCT ed_id FROM editoriales, titulos WHERE editoriales.ed_id=titulos.ed_id and tipo='BD');
