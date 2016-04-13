@@ -98,6 +98,7 @@ public class Program {
 		    + cantidad + " ");
 	}
 
+	rs.close();
 	stat.close();
     }
 
@@ -122,6 +123,9 @@ public class Program {
 	    String nombre = rs.getString(1);
 	    System.out.println(nombre);
 	}
+	rs.close();
+	psQuery.close();
+	stat.close();
 
     }
 
