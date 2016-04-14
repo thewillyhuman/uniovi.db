@@ -32,7 +32,7 @@ public class Program {
 		//exercise5_1();
 		//exercise5_2();
 		printAllCars();
-		exercise5_3();
+		//exercise5_3();
 		
 	}
 
@@ -98,7 +98,7 @@ public class Program {
 				+ "AND coches.codcoche=ventas.codcoche " + "AND ventas.color = ?";  //$NON-NLS-2$
 		String[] parameters = new String[1];
 		parameters[0] = color;
-		rs = DESA.executePreparedSQL(query, parameters);
+		rs = DESA.executeSQL(query, parameters);
 		System.out.println("----- 2 -----"); 
 		while (rs.next()) {
 			String nombre = rs.getString(1);
@@ -130,7 +130,7 @@ public class Program {
 		parameters[0] = lower;
 		parameters[1] = higher;
 		
-		rs = DESA.executePreparedSQL(sql, parameters);
+		rs = DESA.executeSQL(sql, parameters);
 		
 		while(rs.next()) {
 			String cifc = rs.getString(1);
@@ -165,7 +165,7 @@ public class Program {
 		parameters[0] = city;
 		parameters[1] = color;
 		
-		rs = DESA.executePreparedSQL(sql, parameters);
+		rs = DESA.executeSQL(sql, parameters);
 		
 		while(rs.next()) {
 			String nombre = rs.getString(1);
@@ -190,7 +190,7 @@ public class Program {
 		
 		String sql = "INSERT INTO coches VALUES(?,?,?)";
 		try {
-			DESA.executePreparedSQL(sql, parameters);
+			DESA.executeSQL(sql, parameters);
 			System.out.println("REGISTER CREATED: " + parameters[0] + ", " + parameters[1] + ", " + parameters[2]);
 		} catch (SQLException e) {
 			System.err.println("ERROR: register " + parameters[0] + ", " + parameters[1] + ", " + parameters[2] + "couldn't be deleted.");
@@ -291,7 +291,8 @@ public class Program {
 	}
 	
 	private static void printAllCars() throws SQLException {
-		String sql = "SELECT * FROM coches";
+		System.out.println("----- ALL THE CARS ----");
+		String sql = "SELECT * FROM coches ORDER BY codcoche";
 		rs = DESA.executeSQL(sql);
 		
 		while(rs.next()) {
