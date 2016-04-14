@@ -29,7 +29,10 @@ public class Program {
 		//exercise1_1();
 		//exercise1_2();
 		//exercise2("rojo");
-		exercise3();
+		//exercise5_1();
+		//exercise5_2();
+		printAllCars();
+		exercise5_3();
 		
 	}
 
@@ -177,23 +180,60 @@ public class Program {
 	 * introducidos por el usuario
 	 */
 	public static void exercise5_1() {
-
+		String[] parameters = new String[3];
+		System.out.print("Enter the code of the car: ");
+		parameters[0] = ReadString();
+		System.out.print("Enter the name of the car: ");
+		parameters[1] = ReadString();
+		System.out.println("Enter the model of the car: ");
+		parameters[2] = ReadString();
+		
+		String sql = "INSERT INTO coches VALUES(?,?,?)";
+		try {
+			DESA.executePreparedSQL(sql, parameters);
+			System.out.println("REGISTER CREATED: " + parameters[0] + ", " + parameters[1] + ", " + parameters[2]);
+		} catch (SQLException e) {
+			System.err.println("ERROR: register " + parameters[0] + ", " + parameters[1] + ", " + parameters[2] + "couldn't be deleted.");
+			e.printStackTrace();
+		}
 	}
 
 	/*
 	 * 5.2. Borre un determinado coche cuyo c�digo es introducido por el
 	 * usuario.
 	 */
-	public static void exercise5_2() {
-
+	public static void exercise5_2() throws SQLException {
+		System.out.print("Enter the id of the car you want to delete: "); 
+		int carID = ReadInt();
+		String sql = "DELETE FROM coches"
+					+ "WHERE codcoche = ?";
+		Integer[] parameters = new Integer[1];
+		parameters[0] = carID;
+		DESA.executeUpdate(sql, parameters);
+		System.out.println("Car with id: " + carID + "has been deleted.");
 	}
 
 	/*
 	 * 5.3. Actualice el nombre y el modelo para un determinado coche cuyo
 	 * c�digo es introducido por el usuario.
 	 */
-	public static void exercise5_3() {
-
+	public static void exercise5_3() throws SQLException {
+		System.out.print("Enter the id of the car you want to modify: "); 
+		int carID = ReadInt();
+		System.out.print("Enter the new name for the car: ");
+		String name = ReadString();
+		System.out.println("Enter the new brand for the car: ");
+		String brand = ReadString();
+		
+		String sql = "UPDATE coches "
+				+ "SET nombrech = ?, modelo = ? "
+				+ "WHERE codcoche = ?";
+		Object[] parameters = new Object[3];
+		parameters[0] = name;
+		parameters[1] = brand;
+		parameters[2] = carID;
+		
+		DESA.executeUpdate(sql, parameters);
 	}
 
 	/*
@@ -248,6 +288,15 @@ public class Program {
 	@SuppressWarnings("resource")
 	private static int ReadInt() {
 		return new Scanner(System.in).nextInt();
+	}
+	
+	private static void printAllCars() throws SQLException {
+		String sql = "SELECT * FROM coches";
+		rs = DESA.executeSQL(sql);
+		
+		while(rs.next()) {
+			System.out.println(" REGISTER: " + rs.getString(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
+		}
 	}
 
 }

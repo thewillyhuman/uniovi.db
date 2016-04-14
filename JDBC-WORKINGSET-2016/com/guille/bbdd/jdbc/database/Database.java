@@ -90,6 +90,14 @@ public abstract class Database {
 		return getResultSet();
 	}
 
+	public void executeUpdate(String sql, Object[] parameters) throws SQLException {
+		PreparedStatement psQuery = this.conn.prepareStatement(sql);
+		for(int i = 0; i < parameters.length; i++) {
+			psQuery.setObject(i+1, parameters[i]);
+		}
+		psQuery.executeUpdate();
+	}
+	
 	/**
 	 * Returns the result set object.
 	 * 
