@@ -1,45 +1,38 @@
 package com.guille.bbdd.jdbc.lab12;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Scanner;
+
+import com.guille.bbdd.jdbc.bundle.Bundle;
+import com.guille.bbdd.jdbc.database.Database;
+import com.guille.bbdd.jdbc.database.OracleDatabase;
 
 public class Program {
 
-	private static Connection conn = null;
-	private static Statement stat = null;
+	private static Database DESA = new OracleDatabase();
 	private static ResultSet rs = null;
 
-	public static final String PROTOCOL_JDBC = "jdbc";
-	public static final String VENDOR_ORACLE = "oracle";
-	public static final String DRIVER_THIN = "thin";
-	public static final String DEFAULT_SERVER = "156.35.94.99";
-	public static final String DEFAULT_PORT = "1521";
-	public static final String DEFAULT_DATABASE = "DESA";
+	public static final String PROTOCOL_JDBC = Bundle.getString("bundle.desa.protocol");
+	public static final String VENDOR_ORACLE = Bundle.getString("bundle.desa.vendor");
+	public static final String DRIVER_THIN = Bundle.getString("bundle.desa.driver");
+	public static final String DEFAULT_SERVER = Bundle.getString("bundle.desa.server");
+	public static final String DEFAULT_PORT = Bundle.getString("bundle.desa.port");
+	public static final String DEFAULT_DATABASE = Bundle.getString("bundle.desa.database.name");
 
-	private static final String DESA_USER = "UO236856";
-	private static final String DESA_PASS = "UO236856";
+	private static final String DESA_USER = Bundle.getString("bundle.desa.user");
+	private static final String DESA_PASS = Bundle.getString("bundle.desa.pass");
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		// Ejemplos para leer por teclado
-		/*
-		 * System.out.println("Leer un entero por teclado"); int entero =
-		 * ReadInt(); System.out.println("Leer una cadena por teclado"); String
-		 * cadena = ReadString(); System.out.println("Entero: " + entero +
-		 * " Cadena: " + cadena);
-		 */
-
+	
 		// Connecting to the database.
-		Class.forName("oracle.jdbc.OracleDriver");
-		conn = openDESADADatabase(DESA_USER, DESA_PASS);
-		exercise1_1();
-		exercise1_2();
-		exercise2("rojo");
-		closeConnection(conn);
+		DESA.connectDatabase(PROTOCOL_JDBC, VENDOR_ORACLE, DRIVER_THIN, DEFAULT_SERVER, DEFAULT_PORT, DEFAULT_DATABASE, DESA_USER, DESA_PASS);
+		
+		//exercise1_1();
+		//exercise1_2();
+		//exercise2("rojo");
+		exercise3();
+		
 	}
 
 	/*
@@ -56,7 +49,7 @@ public class Program {
 				+ "WHERE concesionarios.cifc=distribucion.cifc " + "AND distribucion.codcoche=coches.codcoche "
 				+ "AND coches.modelo='gti' )");
 
-		rs = executeSQLInConn(query, conn);
+		rs = DESA.executeSQL(query);
 
 		System.out.println("----- 1-1 -----");
 		while (rs.next()) {
@@ -65,7 +58,6 @@ public class Program {
 			System.out.println(name + " " + surname);
 		}
 
-		stat.close();
 
 	}
 
@@ -75,25 +67,22 @@ public class Program {
 	 */
 	public static void exercise1_2() throws SQLException {
 
-		String query = "SELECT distribucion.cifc cif, nombrec nombre, ciudadc ciudad, AVG(cantidad) cantidad "
-				+ "FROM distribucion, concesionarios " + "WHERE concesionarios.cifc=distribucion.cifc "
-				+ "GROUP BY distribucion.cifc, concesionarios.nombrec, concesionarios.ciudadc "
-				+ "HAVING AVG(cantidad) > (SELECT AVG(cantidad) FROM distribucion)";
+		String query = "SELECT distribucion.cifc cif, nombrec nombre, ciudadc ciudad, AVG(cantidad) cantidad " 
+				+ "FROM distribucion, concesionarios " + "WHERE concesionarios.cifc=distribucion.cifc "  //$NON-NLS-2$
+				+ "GROUP BY distribucion.cifc, concesionarios.nombrec, concesionarios.ciudadc " 
+				+ "HAVING AVG(cantidad) > (SELECT AVG(cantidad) FROM distribucion)"; 
 
-		rs = executeSQLInConn(query, conn);
+		rs = DESA.executeSQL(query);
 
-		System.out.println("----- 1-2 -----");
+		System.out.println("----- 1-2 -----"); 
 		while (rs.next()) {
-			String cif = rs.getString("cif");
-			String nombre = rs.getString("nombre");
-			String ciudad = rs.getString("ciudad");
-			String cantidad = rs.getString("cantidad");
+			String cif = rs.getString("cif"); 
+			String nombre = rs.getString("nombre"); 
+			String ciudad = rs.getString("ciudad"); 
+			String cantidad = rs.getString("cantidad"); 
 
-			System.out.println(cif + " " + nombre + " " + ciudad + " " + cantidad + " ");
+			System.out.println(cif + " " + nombre + " " + ciudad + " " + cantidad + " ");  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
-
-		rs.close();
-		stat.close();
 	}
 
 	/*
@@ -103,20 +92,17 @@ public class Program {
 	 * introducido por el usuario.
 	 */
 	public static void exercise2(String color) throws SQLException {
-		String query = "SELECT DISTINCT nombrem " + "FROM marcas, marco, coches, ventas "
-				+ "WHERE marcas.cifm=marco.cifm " + "AND marco.codcoche=coches.codcoche "
-				+ "AND coches.codcoche=ventas.codcoche " + "AND ventas.color = ?";
-		PreparedStatement psQuery = conn.prepareStatement(query);
-		psQuery.setString(1, color);
-		rs = psQuery.executeQuery();
-		System.out.println("----- 2 -----");
+		String query = "SELECT DISTINCT nombrem " + "FROM marcas, marco, coches, ventas "  //$NON-NLS-2$
+				+ "WHERE marcas.cifm=marco.cifm " + "AND marco.codcoche=coches.codcoche "  //$NON-NLS-2$
+				+ "AND coches.codcoche=ventas.codcoche " + "AND ventas.color = ?";  //$NON-NLS-2$
+		String[] parameters = new String[1];
+		parameters[0] = color;
+		rs = DESA.executePreparedSQL(query, parameters);
+		System.out.println("----- 2 -----"); 
 		while (rs.next()) {
 			String nombre = rs.getString(1);
 			System.out.println(nombre);
 		}
-		rs.close();
-		psQuery.close();
-		stat.close();
 
 	}
 
@@ -127,8 +113,30 @@ public class Program {
 	 * que disponen de una cantidad de coches comprendida entre dos cantidades
 	 * introducidas por el usuario, ambas inclusive.
 	 */
-	public static void exercise3() {
-
+	public static void exercise3() throws SQLException {
+		String sql = "SELECT DISTINCT concesionarios.cifc, SUM(distribucion.cantidad) stock " 
+				+ "FROM distribucion, concesionarios " 
+				+ "WHERE distribucion.cifc=concesionarios.cifc " 
+				+ "GROUP BY concesionarios.cifc " 
+				+ "HAVING SUM(distribucion.cantidad) >=? " 
+				+ "AND SUM(distribucion.cantidad) <=?"; 
+		System.out.print("Enter the lower ammount: "); 
+		int lower = ReadInt();
+		System.out.print("Enter the higer ammount: "); 
+		int higher = ReadInt();
+		
+		Integer[] parameters = new Integer[2];
+		parameters[0] = lower;
+		parameters[1] = higher;
+		
+		rs = DESA.executePreparedSQL(sql, parameters);
+		
+		while(rs.next()) {
+			String cifc = rs.getString(1);
+			int stock = rs.getInt(2);
+			
+			System.out.println(cifc + " : " + stock); 
+		}
 	}
 
 	/*
@@ -138,7 +146,30 @@ public class Program {
 	 * que no han comprado coches de un color introducido por el usuario en
 	 * concesionarios de una ciudad introducida por el usuario.
 	 */
-	public static void exercise4() {
+	public static void exercise4() throws SQLException {
+		String sql = "SELECT  clientes.nombre FROM clientes " 
+				+ "WHERE dni NOT IN " 
+				+ "(SELECT clientes.dni FROM clientes, ventas, concesionarios " 
+				+ "WHERE clientes.dni=ventas.dni " 
+				+ "AND ventas.cifc=concesionarios.cifc " 
+				+ "AND concesionarios.ciudadc = ?" 
+				+ "AND ventas.color = ?)"; 
+		
+		System.out.print("Enter the city of the dealer: "); 
+		String city = ReadString();
+		System.out.print("Enter the color of the car: "); 
+		String color = ReadString();
+		
+		String[] parameters = new String[2];
+		parameters[0] = city;
+		parameters[1] = color;
+		
+		rs = DESA.executePreparedSQL(sql, parameters);
+		
+		while(rs.next()) {
+			String nombre = rs.getString(1);
+			System.out.println(nombre);
+		}
 
 	}
 
@@ -219,81 +250,6 @@ public class Program {
 	@SuppressWarnings("resource")
 	private static int ReadInt() {
 		return new Scanner(System.in).nextInt();
-	}
-
-	/**
-	 * Opens a database connection.
-	 * 
-	 * @param protocol
-	 *            to use by the connection.
-	 * @param vendor
-	 *            of the database.
-	 * @param driver
-	 *            for the connection.
-	 * @param server
-	 *            address.
-	 * @param port
-	 *            where the connection must call.
-	 * @param database
-	 *            name.
-	 * @param user
-	 *            of the connection.
-	 * @param password
-	 *            of the connection.
-	 * 
-	 * @return the opened connection.
-	 * @throws SQLException
-	 *             if there is any error while opening the database.
-	 */
-	private static Connection openOracleDatabase(String protocol, String vendor, String driver, String server,
-			String port, String databaseName, String user, String password) throws SQLException {
-		String url = protocol + ":" + vendor + ":" + driver + ":@" + server + ":" + port + ":" + databaseName;
-		Connection conn = DriverManager.getConnection(url, user, password);
-		return conn;
-	}
-
-	/**
-	 * 
-	 * @param user
-	 * @param pass
-	 * @return
-	 * @throws SQLException
-	 */
-	private static Connection openDESADADatabase(String user, String pass) throws SQLException {
-		return openOracleDatabase(PROTOCOL_JDBC, VENDOR_ORACLE, DRIVER_THIN, DEFAULT_SERVER, DEFAULT_PORT,
-				DEFAULT_DATABASE, user, pass);
-	}
-
-	/**
-	 * Closes a given connection.
-	 * 
-	 * @param connection
-	 *            to be closed.
-	 */
-	private static void closeConnection(Connection conn) {
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			System.err.println("The connection couldn't be closed.");
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Executes a sql in a given connection.
-	 * 
-	 * @param sql
-	 *            sentence to execute.
-	 * @param connection
-	 *            where the sql will be executed.
-	 * @return the result set.
-	 * 
-	 * @throws SQLException
-	 */
-	private static ResultSet executeSQLInConn(String sql, Connection conn) throws SQLException {
-		stat = conn.createStatement();
-		ResultSet rs = stat.executeQuery(sql);
-		return rs;
 	}
 
 }
