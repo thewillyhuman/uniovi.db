@@ -3,8 +3,6 @@ package com.guille.bbdd.jdbc.lab12;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-
-import com.guille.bbdd.jdbc.bundle.Bundle;
 import com.guille.bbdd.jdbc.database.Database;
 import com.guille.bbdd.jdbc.database.OracleDatabase;
 
@@ -13,15 +11,15 @@ public class Program {
 	private static Database DESA = new OracleDatabase();
 	private static ResultSet rs = null;
 
-	public static final String PROTOCOL_JDBC = Bundle.getString("bundle.desa.protocol");
-	public static final String VENDOR_ORACLE = Bundle.getString("bundle.desa.vendor");
-	public static final String DRIVER_THIN = Bundle.getString("bundle.desa.driver");
-	public static final String DEFAULT_SERVER = Bundle.getString("bundle.desa.server");
-	public static final String DEFAULT_PORT = Bundle.getString("bundle.desa.port");
-	public static final String DEFAULT_DATABASE = Bundle.getString("bundle.desa.database.name");
+	public static final String PROTOCOL_JDBC = "jdbc";
+	public static final String VENDOR_ORACLE = "oracle";
+	public static final String DRIVER_THIN = "thin";
+	public static final String DEFAULT_SERVER = "156.35.94.99";
+	public static final String DEFAULT_PORT = "1521";
+	public static final String DEFAULT_DATABASE = "DESA";
 
-	private static final String DESA_USER = Bundle.getString("bundle.desa.user");
-	private static final String DESA_PASS = Bundle.getString("bundle.desa.pass");
+	private static final String DESA_USER = "UO236856";
+	private static final String DESA_PASS = "UO236856";
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 	
