@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 public class Bundle {
 	
-	private static final String BUNDLE_NAME = "com.guille.bbdd.jdbc.bundle.desa.properties";
+	private static final String BUNDLE_NAME = "com.guille.bbdd.jdbc.bundle.Desa.properties";
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
 	private Bundle() {}
