@@ -32,7 +32,8 @@ public class Program {
 		//exercise5_1();
 		//exercise5_2();
 		printAllCars();
-		//exercise5_3();
+		exercise5_2();
+		printAllCars();
 		
 	}
 
@@ -205,12 +206,12 @@ public class Program {
 	public static void exercise5_2() throws SQLException {
 		System.out.print("Enter the id of the car you want to delete: "); 
 		int carID = ReadInt();
-		String sql = "DELETE FROM coches"
+		String sql = "DELETE FROM coches "
 					+ "WHERE codcoche = ?";
 		Integer[] parameters = new Integer[1];
 		parameters[0] = carID;
 		DESA.executeUpdate(sql, parameters);
-		System.out.println("Car with id: " + carID + "has been deleted.");
+		System.out.println("Car with id: " + carID + " has been deleted.");
 	}
 
 	/*
