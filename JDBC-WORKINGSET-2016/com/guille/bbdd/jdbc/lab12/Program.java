@@ -11,30 +11,23 @@ public class Program {
 	private static Database DESA = new OracleDatabase();
 	private static ResultSet rs = null;
 
-	public static final String PROTOCOL_JDBC = "jdbc";
-	public static final String VENDOR_ORACLE = "oracle";
-	public static final String DRIVER_THIN = "thin";
-	public static final String DEFAULT_SERVER = "156.35.94.99";
-	public static final String DEFAULT_PORT = "1521";
-	public static final String DEFAULT_DATABASE = "DESA";
-
-	private static final String DESA_USER = "UO236856";
-	private static final String DESA_PASS = "UO236856";
-
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-	
+
 		// Connecting to the database.
-		DESA.connectDatabase(PROTOCOL_JDBC, VENDOR_ORACLE, DRIVER_THIN, DEFAULT_SERVER, DEFAULT_PORT, DEFAULT_DATABASE, DESA_USER, DESA_PASS);
-		
-		//exercise1_1();
-		//exercise1_2();
-		//exercise2("rojo");
-		//exercise5_1();
-		//exercise5_2();
-		printAllCars();
-		exercise5_2();
-		printAllCars();
-		
+		DESA.connectDatabase(Database.PROTOCOL_JDBC, Database.VENDOR_ORACLE, Database.DRIVER_THIN,
+				Database.DEFAULT_SERVER, Database.DEFAULT_PORT, Database.DEFAULT_DATABASE, Database.DESA_USER,
+				Database.DESA_PASS);
+
+		// exercise1_1();
+		// exercise1_2();
+		// exercise2("rojo");
+		// exercise5_1();
+		// exercise5_2();
+		// exercise6_1();
+		// exercise7_1();
+
+		DESA.closeConnection();
+
 	}
 
 	/*
@@ -60,7 +53,6 @@ public class Program {
 			System.out.println(name + " " + surname);
 		}
 
-
 	}
 
 	/*
@@ -69,21 +61,21 @@ public class Program {
 	 */
 	public static void exercise1_2() throws SQLException {
 
-		String query = "SELECT distribucion.cifc cif, nombrec nombre, ciudadc ciudad, AVG(cantidad) cantidad " 
-				+ "FROM distribucion, concesionarios " + "WHERE concesionarios.cifc=distribucion.cifc "  //$NON-NLS-2$
-				+ "GROUP BY distribucion.cifc, concesionarios.nombrec, concesionarios.ciudadc " 
-				+ "HAVING AVG(cantidad) > (SELECT AVG(cantidad) FROM distribucion)"; 
+		String query = "SELECT distribucion.cifc cif, nombrec nombre, ciudadc ciudad, AVG(cantidad) cantidad "
+				+ "FROM distribucion, concesionarios " + "WHERE concesionarios.cifc=distribucion.cifc " //$NON-NLS-2$
+				+ "GROUP BY distribucion.cifc, concesionarios.nombrec, concesionarios.ciudadc "
+				+ "HAVING AVG(cantidad) > (SELECT AVG(cantidad) FROM distribucion)";
 
 		rs = DESA.executeSQL(query);
 
-		System.out.println("----- 1-2 -----"); 
+		System.out.println("----- 1-2 -----");
 		while (rs.next()) {
-			String cif = rs.getString("cif"); 
-			String nombre = rs.getString("nombre"); 
-			String ciudad = rs.getString("ciudad"); 
-			String cantidad = rs.getString("cantidad"); 
+			String cif = rs.getString("cif");
+			String nombre = rs.getString("nombre");
+			String ciudad = rs.getString("ciudad");
+			String cantidad = rs.getString("cantidad");
 
-			System.out.println(cif + " " + nombre + " " + ciudad + " " + cantidad + " ");  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			System.out.println(cif + " " + nombre + " " + ciudad + " " + cantidad + " "); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 	}
 
@@ -94,13 +86,13 @@ public class Program {
 	 * introducido por el usuario.
 	 */
 	public static void exercise2(String color) throws SQLException {
-		String query = "SELECT DISTINCT nombrem " + "FROM marcas, marco, coches, ventas "  //$NON-NLS-2$
-				+ "WHERE marcas.cifm=marco.cifm " + "AND marco.codcoche=coches.codcoche "  //$NON-NLS-2$
-				+ "AND coches.codcoche=ventas.codcoche " + "AND ventas.color = ?";  //$NON-NLS-2$
+		String query = "SELECT DISTINCT nombrem " + "FROM marcas, marco, coches, ventas " //$NON-NLS-2$
+				+ "WHERE marcas.cifm=marco.cifm " + "AND marco.codcoche=coches.codcoche " //$NON-NLS-2$
+				+ "AND coches.codcoche=ventas.codcoche " + "AND ventas.color = ?"; //$NON-NLS-2$
 		String[] parameters = new String[1];
 		parameters[0] = color;
 		rs = DESA.executeSQL(query, parameters);
-		System.out.println("----- 2 -----"); 
+		System.out.println("----- 2 -----");
 		while (rs.next()) {
 			String nombre = rs.getString(1);
 			System.out.println(nombre);
@@ -116,28 +108,26 @@ public class Program {
 	 * introducidas por el usuario, ambas inclusive.
 	 */
 	public static void exercise3() throws SQLException {
-		String sql = "SELECT DISTINCT concesionarios.cifc, SUM(distribucion.cantidad) stock " 
-				+ "FROM distribucion, concesionarios " 
-				+ "WHERE distribucion.cifc=concesionarios.cifc " 
-				+ "GROUP BY concesionarios.cifc " 
-				+ "HAVING SUM(distribucion.cantidad) >=? " 
-				+ "AND SUM(distribucion.cantidad) <=?"; 
-		System.out.print("Enter the lower ammount: "); 
+		String sql = "SELECT DISTINCT concesionarios.cifc, SUM(distribucion.cantidad) stock "
+				+ "FROM distribucion, concesionarios " + "WHERE distribucion.cifc=concesionarios.cifc "
+				+ "GROUP BY concesionarios.cifc " + "HAVING SUM(distribucion.cantidad) >=? "
+				+ "AND SUM(distribucion.cantidad) <=?";
+		System.out.print("Enter the lower ammount: ");
 		int lower = ReadInt();
-		System.out.print("Enter the higer ammount: "); 
+		System.out.print("Enter the higer ammount: ");
 		int higher = ReadInt();
-		
+
 		Integer[] parameters = new Integer[2];
 		parameters[0] = lower;
 		parameters[1] = higher;
-		
+
 		rs = DESA.executeSQL(sql, parameters);
-		
-		while(rs.next()) {
+
+		while (rs.next()) {
 			String cifc = rs.getString(1);
 			int stock = rs.getInt(2);
-			
-			System.out.println(cifc + " : " + stock); 
+
+			System.out.println(cifc + " : " + stock);
 		}
 	}
 
@@ -149,26 +139,22 @@ public class Program {
 	 * concesionarios de una ciudad introducida por el usuario.
 	 */
 	public static void exercise4() throws SQLException {
-		String sql = "SELECT  clientes.nombre FROM clientes " 
-				+ "WHERE dni NOT IN " 
-				+ "(SELECT clientes.dni FROM clientes, ventas, concesionarios " 
-				+ "WHERE clientes.dni=ventas.dni " 
-				+ "AND ventas.cifc=concesionarios.cifc " 
-				+ "AND concesionarios.ciudadc = ?" 
-				+ "AND ventas.color = ?)"; 
-		
-		System.out.print("Enter the city of the dealer: "); 
+		String sql = "SELECT  clientes.nombre FROM clientes " + "WHERE dni NOT IN "
+				+ "(SELECT clientes.dni FROM clientes, ventas, concesionarios " + "WHERE clientes.dni=ventas.dni "
+				+ "AND ventas.cifc=concesionarios.cifc " + "AND concesionarios.ciudadc = ?" + "AND ventas.color = ?)";
+
+		System.out.print("Enter the city of the dealer: ");
 		String city = ReadString();
-		System.out.print("Enter the color of the car: "); 
+		System.out.print("Enter the color of the car: ");
 		String color = ReadString();
-		
+
 		String[] parameters = new String[2];
 		parameters[0] = city;
 		parameters[1] = color;
-		
+
 		rs = DESA.executeSQL(sql, parameters);
-		
-		while(rs.next()) {
+
+		while (rs.next()) {
 			String nombre = rs.getString(1);
 			System.out.println(nombre);
 		}
@@ -188,13 +174,14 @@ public class Program {
 		parameters[1] = ReadString();
 		System.out.println("Enter the model of the car: ");
 		parameters[2] = ReadString();
-		
+
 		String sql = "INSERT INTO coches VALUES(?,?,?)";
 		try {
 			DESA.executeSQL(sql, parameters);
 			System.out.println("REGISTER CREATED: " + parameters[0] + ", " + parameters[1] + ", " + parameters[2]);
 		} catch (SQLException e) {
-			System.err.println("ERROR: register " + parameters[0] + ", " + parameters[1] + ", " + parameters[2] + "couldn't be deleted.");
+			System.err.println("ERROR: register " + parameters[0] + ", " + parameters[1] + ", " + parameters[2]
+					+ "couldn't be deleted.");
 			e.printStackTrace();
 		}
 	}
@@ -204,10 +191,9 @@ public class Program {
 	 * usuario.
 	 */
 	public static void exercise5_2() throws SQLException {
-		System.out.print("Enter the id of the car you want to delete: "); 
+		System.out.print("Enter the id of the car you want to delete: ");
 		int carID = ReadInt();
-		String sql = "DELETE FROM coches "
-					+ "WHERE codcoche = ?";
+		String sql = "DELETE FROM coches " + "WHERE codcoche = ?";
 		Integer[] parameters = new Integer[1];
 		parameters[0] = carID;
 		DESA.executeUpdate(sql, parameters);
@@ -219,21 +205,19 @@ public class Program {
 	 * c�digo es introducido por el usuario.
 	 */
 	public static void exercise5_3() throws SQLException {
-		System.out.print("Enter the id of the car you want to modify: "); 
+		System.out.print("Enter the id of the car you want to modify: ");
 		int carID = ReadInt();
 		System.out.print("Enter the new name for the car: ");
 		String name = ReadString();
 		System.out.println("Enter the new brand for the car: ");
 		String brand = ReadString();
-		
-		String sql = "UPDATE coches "
-				+ "SET nombrech = ?, modelo = ? "
-				+ "WHERE codcoche = ?";
+
+		String sql = "UPDATE coches " + "SET nombrech = ?, modelo = ? " + "WHERE codcoche = ?";
 		Object[] parameters = new Object[3];
 		parameters[0] = name;
 		parameters[1] = brand;
 		parameters[2] = carID;
-		
+
 		DESA.executeUpdate(sql, parameters);
 	}
 
@@ -243,15 +227,24 @@ public class Program {
 	 * que dado un c�digo de concesionario devuelve el n�mero ventas que se han
 	 * realizado en el mismo. 6.1. Funcion
 	 */
-	public static void exercise6_1() {
-
+	public static void exercise6_1() throws SQLException {
+		System.out.print("Enter the cif code of the dealer you want to consult: ");
+		int cifc = ReadInt();
+		exercise6_2(cifc);
 	}
 
 	/*
 	 * 6.1. Procedimiento
 	 */
-	public static void exercise6_2() {
+	public static void exercise6_2(int cifc) throws SQLException {
+		String sql = "SELECT COUNT(cifc) " + "FROM ventas " + "WHERE ventas.cifc = ?";
+		Integer[] parameters = new Integer[1];
+		parameters[0] = cifc;
+		rs = DESA.executeSQL(sql, parameters);
 
+		while (rs.next()) {
+			System.out.println("The dealer with cif " + cifc + " has sold " + rs.getString(1) + " cars.");
+		}
 	}
 
 	/*
@@ -260,15 +253,24 @@ public class Program {
 	 * que dada una ciudad que se le pasa como par�metro devuelve el n�mero de
 	 * clientes de dicha ciudad. 7.1. Funcion
 	 */
-	public static void exercise7_1() {
-
+	public static void exercise7_1() throws SQLException {
+		System.out.print("Enter the city you want to consult: ");
+		String city = ReadString();
+		exercise7_2(city);
 	}
 
 	/*
 	 * 7.2. Procedimiento
 	 */
-	public static void exercise7_2() {
+	public static void exercise7_2(String city) throws SQLException {
+		String sql = "SELECT COUNT(dni) " + "FROM clientes " + "WHERE clientes.ciudad = ?";
+		String[] parameters = new String[1];
+		parameters[0] = city.toLowerCase();
+		rs = DESA.executeSQL(sql, parameters);
 
+		while (rs.next()) {
+			System.out.println("The city " + city + " has " + rs.getString(1) + " clients.");
+		}
 	}
 
 	/**
@@ -290,13 +292,51 @@ public class Program {
 	private static int ReadInt() {
 		return new Scanner(System.in).nextInt();
 	}
-	
+
+	/**
+	 * Prints all the cars in the database.
+	 * 
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unused")
 	private static void printAllCars() throws SQLException {
 		System.out.println("----- ALL THE CARS ----");
 		String sql = "SELECT * FROM coches ORDER BY codcoche";
 		rs = DESA.executeSQL(sql);
-		
-		while(rs.next()) {
+
+		while (rs.next()) {
+			System.out.println(" REGISTER: " + rs.getString(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
+		}
+	}
+
+	/**
+	 * Prints all the dealers in the database.
+	 * 
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unused")
+	private static void printAllDealers() throws SQLException {
+		System.out.println("----- ALL THE DEALERS ----");
+		String sql = "SELECT * FROM concesionarios ORDER BY cifc";
+		rs = DESA.executeSQL(sql);
+
+		while (rs.next()) {
+			System.out.println(" REGISTER: " + rs.getString(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
+		}
+	}
+
+	/**
+	 * Prints all the clients in the database.
+	 * 
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unused")
+	private static void printAllClients() throws SQLException {
+		System.out.println("----- ALL THE CLIENTS ----");
+		String sql = "SELECT * FROM clientes ORDER BY dni";
+		rs = DESA.executeSQL(sql);
+
+		while (rs.next()) {
 			System.out.println(" REGISTER: " + rs.getString(1) + ", " + rs.getString(2) + ", " + rs.getString(3));
 		}
 	}

@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class OracleDatabase extends Database {
-	
+
 	public static final String ORACLE_DRIVER = "oracle.jdbc.OracleDriver";
-	
+
 	public OracleDatabase() {
 		try {
 			Class.forName(ORACLE_DRIVER);
@@ -22,6 +22,7 @@ public class OracleDatabase extends Database {
 			String databaseName, String user, String password) throws SQLException {
 		String url = protocol + ":" + vendor + ":" + driver + ":@" + server + ":" + port + ":" + databaseName;
 		this.conn = DriverManager.getConnection(url, user, password);
+		System.out.println("--> Connection " + this.conn.toString() + " has been oppened succesfully.");
 		return this.conn;
 	}
 
