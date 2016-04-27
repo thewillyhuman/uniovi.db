@@ -200,7 +200,7 @@ public abstract class Database {
 	/**
 	 * Returns the result set object.
 	 * 
-	 * @return the resultset object.
+	 * @return the result set object.
 	 */
 	public ResultSet getResultSet() {
 		return this.rs;
