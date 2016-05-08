@@ -8,4 +8,4 @@ This repository contains all the necessary code to understand correctly the subj
 In the other hand this code has been published under Creative Commons - Non Comercial use. So you can use it for any project you want when you mention me in the resources and of course you cannot obtain venefits from this code.
 
 <img src="http://es.creativecommons.org/blog/wp-content/uploads/2013/04/by-nc.eu_petit.png" height="61" align="middle">
-<img src="https://github.com/computer-engineering-uniovi/standars/blob/master/ovicomputing.png" width="162" align="middle">
+<img src="https://github.com/computer-engineering-uniovi/standars/blob/master/ovicomputing@small.png" align="middle">
