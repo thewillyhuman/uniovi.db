@@ -9,6 +9,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author Guillermo Facundo Colunga
+ *
+ */
 public abstract class Database {
 
     public static final String PROTOCOL_JDBC = "jdbc";
